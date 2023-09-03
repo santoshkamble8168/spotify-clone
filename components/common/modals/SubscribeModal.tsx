@@ -38,27 +38,26 @@ const SubscribeModal: React.FC<SubscribeModalProps> = ({ products }) => {
 
 	const handleCheckout = async (price: Price) => {
 		setPriceIdLoading(price.id);
-
 		if (!user) {
 			setPriceIdLoading(undefined);
-			return toast.error("Must be logged in");
+			return toast.error('Must be logged in');
 		}
 
 		if (subscription) {
 			setPriceIdLoading(undefined);
-			return toast("Already subscribed!");
+			return toast('Already subscribed');
 		}
 
 		try {
 			const { sessionId } = await postData({
-				url: "/api/create-checkout-session",
-				data: { price },
+				url: '/api/create-checkout-session',
+				data: { price }
 			});
 
 			const stripe = await getStripe();
 			stripe?.redirectToCheckout({ sessionId });
-		} catch (error: any) {
-			toast.error(error?.message);
+		} catch (error) {
+			return toast.error((error as Error)?.message);
 		} finally {
 			setPriceIdLoading(undefined);
 		}
